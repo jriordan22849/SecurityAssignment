@@ -6,7 +6,6 @@
 package ie.dit;
 
 import java.math.BigInteger;
-import java.util.Scanner;
 
 public class RSA {
 	
@@ -27,7 +26,7 @@ public class RSA {
 		E = RSA_Keys[2];
 	}
 	
-	
+
 	// Method to create new keys and encrypt message and return a biginteger.
 	public static BigInteger encyptFunction(BigInteger message)
 	{
