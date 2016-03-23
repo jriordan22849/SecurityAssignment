@@ -29,13 +29,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-
-
-
-
-
-
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -55,7 +48,6 @@ import java.awt.Font;
 
 import javax.swing.JFileChooser;
 
-import java.awt.Choice;
 import java.math.BigInteger;
 
 import javax.swing.JTextField;
@@ -82,8 +74,6 @@ public class GUI extends JPanel implements ActionListener{
 	File file, pk;
 	
 	boolean wrtieToFile = false;
-	
-	JLabel keyLabel;
 	JButton chooseFile;
 	JButton fileDecrypt;
 	JButton clearButton;
@@ -102,9 +92,10 @@ public class GUI extends JPanel implements ActionListener{
 	JTextArea plaintextArea;
 	JTextArea cyphertextArea;
 	private JTextField PKey;
+	private JTextField publicKeyArea;
 	
 	public GUI(BorderLayout borderLayout) {
-		setBackground(Color.LIGHT_GRAY);
+		setBackground(Color.WHITE);
 		
 		
 		JPanel textFieldPanel = new JPanel(new BorderLayout());
@@ -119,7 +110,8 @@ public class GUI extends JPanel implements ActionListener{
 		
 		//Components that go in the textFieldPanel
 		plaintextArea = new JTextArea(5, 35);
-		plaintextArea.setBounds(78, 46, 422, 82);
+		plaintextArea.setBackground(Color.LIGHT_GRAY);
+		plaintextArea.setBounds(78, 46, 422, 48);
 		plaintextArea.setTabSize(15);
 		add(plaintextArea);
 		plaintextArea.setLineWrap(true);
@@ -127,7 +119,7 @@ public class GUI extends JPanel implements ActionListener{
 		add(textFieldPanel);
 		
 		JButton encrypt = new JButton("Encrypt");
-		encrypt.setBounds(300, 266, 91, 29);
+		encrypt.setBounds(303, 207, 91, 29);
 		//encrypt.setHorizontalAlignment(SwingConstants.TRAILING);
 		add(encrypt);
 		encrypt.setBackground(Color.LIGHT_GRAY);
@@ -136,14 +128,15 @@ public class GUI extends JPanel implements ActionListener{
 		
 		
 		cyphertextArea = new JTextArea(5, 35);
-		cyphertextArea.setBounds(78, 172, 422, 82);
+		cyphertextArea.setBackground(Color.LIGHT_GRAY);
+		cyphertextArea.setBounds(78, 147, 422, 48);
 		cyphertextArea.setTabSize(15);
 		add(cyphertextArea);
 		cyphertextArea.setLineWrap(true);
 		cyphertextArea.setBorder(BorderFactory.createLineBorder(Color.black));
 		
 		JButton decrypt = new JButton("Decrypt");
-		decrypt.setBounds(407, 266, 93, 29);
+		decrypt.setBounds(407, 207, 93, 29);
 		//decrypt.setHorizontalAlignment(SwingConstants.RIGHT);
 		add(decrypt);
 		decrypt.setActionCommand("decrypt");
@@ -156,22 +149,16 @@ public class GUI extends JPanel implements ActionListener{
 		
 		JLabel lblMessageInBytes = new JLabel("Encrypted Message");
 		lblMessageInBytes.setFont(new Font("Lucida Grande", Font.PLAIN, 25));
-		lblMessageInBytes.setBounds(167, 140, 242, 29);
+		lblMessageInBytes.setBounds(167, 106, 242, 29);
 		add(lblMessageInBytes);
 		
 		JLabel lblPublicKey = new JLabel("Public Key:");
 		lblPublicKey.setFont(new Font("Lucida Grande", Font.PLAIN, 25));
-		lblPublicKey.setBounds(36, 307, 153, 29);
+		lblPublicKey.setBounds(36, 248, 153, 29);
 		add(lblPublicKey);
 		
-	
-		keyLabel = new JLabel(" Public key for RSA");
-		keyLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
-		keyLabel.setBackground(Color.LIGHT_GRAY);
-		keyLabel.setBounds(36, 346, 525, 16);
-		add(keyLabel);
-		
 		chooseFile = new JButton("Choose File To Encrpyt");
+		chooseFile.setBackground(Color.WHITE);
 		chooseFile.setBounds(36, 455, 182, 29);
 		add(chooseFile);
 		chooseFile.setActionCommand("Choose_File_Encrypt");
@@ -179,11 +166,13 @@ public class GUI extends JPanel implements ActionListener{
 		
 		JLabel lblPrivatekey = new JLabel("PrivateKey:");
 		lblPrivatekey.setFont(new Font("Lucida Grande", Font.PLAIN, 25));
-		lblPrivatekey.setBounds(36, 374, 153, 29);
+		lblPrivatekey.setBounds(36, 354, 153, 29);
 		add(lblPrivatekey);
 		
 		PKey = new JTextField();
-		PKey.setBounds(36, 409, 525, 28);
+		PKey.setBackground(Color.LIGHT_GRAY);
+		PKey.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+		PKey.setBounds(36, 386, 525, 53);
 		add(PKey);
 		PKey.setColumns(10);
 		
@@ -197,8 +186,15 @@ public class GUI extends JPanel implements ActionListener{
 		clearButton.addActionListener(this);
 		clearButton.setBackground(Color.LIGHT_GRAY);
 		clearButton.setActionCommand("Clear_Button");
-		clearButton.setBounds(74, 266, 91, 29);
+		clearButton.setBounds(78, 207, 91, 29);
 		add(clearButton);
+		
+		publicKeyArea = new JTextField();
+		publicKeyArea.setBackground(Color.LIGHT_GRAY);
+		publicKeyArea.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+		publicKeyArea.setColumns(10);
+		publicKeyArea.setBounds(36, 289, 525, 53);
+		add(publicKeyArea);
 	}
 	
 	
@@ -222,7 +218,7 @@ public class GUI extends JPanel implements ActionListener{
 	}
 
 	
-
+	// method to displays bytes in a string variable.
 	public static String bytesToString(byte[] message)
     {
 		String test = "";
@@ -233,6 +229,7 @@ public class GUI extends JPanel implements ActionListener{
 	    return test;
 	}
 	
+	// method for user to select a file to be encrypted.
 	public void encryptFile() throws IOException {
 		JFileChooser file = new JFileChooser();
 		int result = file.showOpenDialog(this);
@@ -295,6 +292,8 @@ public class GUI extends JPanel implements ActionListener{
 	}
 	
 	
+	// method where user selects file to decrypt. The encrypted message is read, the keys are read from another txt file. 
+	//The message is decrypted and the GUI updated.
 	public void decryptFile()  {
 		String KeyD = null;
 		String KeyN = null;
@@ -316,9 +315,11 @@ public class GUI extends JPanel implements ActionListener{
 					emcryptedIn = new BufferedReader(encryptedReader);
 					
 					for(int i = 0; i < 2; i ++) {
+						// read the first line into a string variable
 						if(i == 0) {
 							KeyD = in.readLine();
 						}
+						// read in the second line into a string variable
 						if(i == 1) {
 							KeyN = in.readLine();
 						}
@@ -352,11 +353,13 @@ public class GUI extends JPanel implements ActionListener{
 		      // Update GUI
 		      plaintextArea.setText(new String(decryptFile));
 		      cyphertextArea.setText(encryptedString);
-		      keyLabel.setText(KeyN);
+		      publicKeyArea.setText(KeyN);
 		      PKey.setText(KeyD);
 		}	
 	}
 	
+	
+	// the buttons the user is able to press in the GUI.
 	@Override
 	public void actionPerformed(ActionEvent e) {
 				
@@ -376,7 +379,8 @@ public class GUI extends JPanel implements ActionListener{
 			System.out.println("Modulous: " + RSA.E + "\n\n");
 			
 			// set public key in GUI
-			keyLabel.setText(RSA.N.toString());
+			publicKeyArea.setText(RSA.N.toString());
+			PKey.setText(RSA.D.toString());
 			
 			// set cyphertext area in GUI
 			plaintextArea.setText("");
@@ -389,13 +393,14 @@ public class GUI extends JPanel implements ActionListener{
 				} catch(Exception e2) {
 					e2.printStackTrace();
 				}
+				
 				writeToFile = !writeToFile;
 			}
 		} 
 				
 		
 		// if the decyption button is pressed
-		if("decrypt".equals(e.getActionCommand())){ 
+		if("decrypt".equals(e.getActionCommand()))	{ 
 			System.out.println("Decryption command");
 			String ciphertext = cyphertextArea.getText();
 			
@@ -433,15 +438,22 @@ public class GUI extends JPanel implements ActionListener{
 			
 			if(e.getSource() == fileDecrypt) {
 				plaintextArea.setText("");
+				publicKeyArea.setText(" ");
+				cyphertextArea.setText(" ");
+				PKey.setText(" ");
 				decryptFile();
 			}
 		}
 		
+		// Clear button, reset the GUI.
 		if("Clear_Button".equals(e.getActionCommand())) {
 			System.out.println("Clear Command");
 			if(e.getSource() == clearButton) {
+				// Update GUI
 				plaintextArea.setText(" ");
 				cyphertextArea.setText(" ");
+				publicKeyArea.setText(" ");
+			    PKey.setText(" ");
 			}
 		}
 	}
